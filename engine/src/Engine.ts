@@ -1,11 +1,15 @@
 import * as THREE from "three";
 import RAPIER from "@dimforge/rapier3d";
+import { Light, createLight } from "./Light.js";
+import { InternalPhysicalGameObject } from "./GameObject.js";
+import { Box, createBox } from "./Box.js";
 
 class EngineInstance {
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
   private world: RAPIER.World;
+  private physicsObjects: InternalPhysicalGameObject[] = [];
 
   constructor(world: RAPIER.World) {
     this.world = world;
@@ -29,6 +33,16 @@ class EngineInstance {
     window.addEventListener("resize", this.onResize);
   }
 
+  addLight(): Light {
+    return createLight(this.scene);
+  }
+
+  addBox(): Box {
+    const box = createBox(this.scene, this.world);
+    this.physicsObjects.push(box);
+    return box;
+  }
+
   start(): void {
     this.renderer.setAnimationLoop(this.animate);
     console.log("Novelty Engine started");
@@ -36,6 +50,14 @@ class EngineInstance {
 
   private animate = (): void => {
     this.world.step();
+
+    for (const { visual, body } of this.physicsObjects) {
+      const pos = body.translation();
+      visual.position.set(pos.x, pos.y, pos.z);
+      const rot = body.rotation();
+      visual.quaternion.set(rot.x, rot.y, rot.z, rot.w);
+    }
+
     this.renderer.render(this.scene, this.camera);
   };
 
