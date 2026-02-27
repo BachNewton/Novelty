@@ -1,0 +1,14 @@
+{
+  "name": "@novelty/engine",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./src/index.ts",
+  "peerDependencies": {
+    "three": "^0.183.0",
+    "@dimforge/rapier3d": "^0.19.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/three": "^0.183.0"
+  }
+}
