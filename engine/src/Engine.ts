@@ -28,7 +28,7 @@ class EngineInstance {
       0.1,
       1000,
     );
-    this.camera.position.z = 5;
+    this.camera.position.set(0, 3, 10);
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
