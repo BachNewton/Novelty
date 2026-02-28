@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import Stats from "three/examples/jsm/libs/stats.module.js";
 import RAPIER from "@dimforge/rapier3d";
 import { Light, createLight } from "./Light.js";
 import { InternalPhysicalGameObject } from "./GameObject.js";
@@ -10,6 +11,7 @@ class EngineInstance {
   private renderer: THREE.WebGLRenderer;
   private world: RAPIER.World;
   private physicsObjects: InternalPhysicalGameObject[] = [];
+  private stats: Stats;
 
   constructor(world: RAPIER.World) {
     this.world = world;
@@ -30,6 +32,9 @@ class EngineInstance {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     document.body.appendChild(this.renderer.domElement);
 
+    this.stats = new Stats();
+    document.body.appendChild(this.stats.dom);
+
     window.addEventListener("resize", this.onResize);
   }
 
@@ -49,6 +54,7 @@ class EngineInstance {
   }
 
   private animate = (): void => {
+    this.stats.begin();
     this.world.step();
 
     for (const { visual, body } of this.physicsObjects) {
@@ -59,6 +65,7 @@ class EngineInstance {
     }
 
     this.renderer.render(this.scene, this.camera);
+    this.stats.end();
   };
 
   private onResize = (): void => {
