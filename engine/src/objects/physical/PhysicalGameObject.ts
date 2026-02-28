@@ -4,6 +4,7 @@ import { GameObject, InternalGameObject, GameObjectOptions, Clock } from "../Gam
 export interface PhysicalGameObjectOptions extends GameObjectOptions {
   color?: string | number;
   fixed?: boolean;
+  lockRotation?: boolean;
 }
 
 export interface PhysicalGameObject extends GameObject {
@@ -29,6 +30,9 @@ export function createBody(world: RAPIER.World, options?: PhysicalGameObjectOpti
   const body = world.createRigidBody(bodyDesc);
   if (options?.position) {
     body.setTranslation(options.position, true);
+  }
+  if (options?.lockRotation) {
+    body.setEnabledRotations(false, false, false, true);
   }
   return body;
 }

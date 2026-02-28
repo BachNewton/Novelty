@@ -11,6 +11,8 @@ import { SphereToken } from "./objects/physical/Sphere.js";
 import { CapsuleToken } from "./objects/physical/Capsule.js";
 import { Key as KeyConst } from "./Input.js";
 import type { KeyCode as KeyCodeType, Input as InputType } from "./Input.js";
+import { OrbitCameraToken, FPSCameraToken } from "./Camera.js";
+import type { Camera as CameraType, OrbitCameraOptions as OrbitCameraOptionsType, FPSCameraOptions as FPSCameraOptionsType } from "./Camera.js";
 
 export namespace Novelty {
   export const Engine = createEngine;
@@ -33,4 +35,9 @@ export namespace Novelty {
   export const Key = KeyConst;
   export type KeyCode = KeyCodeType;
   export type Input = InputType;
+  export const OrbitCamera = OrbitCameraToken;
+  export type OrbitCameraOptions = OrbitCameraOptionsType;
+  export const FPSCamera = FPSCameraToken;
+  export type FPSCameraOptions = FPSCameraOptionsType;
+  export type Camera = CameraType;
 }

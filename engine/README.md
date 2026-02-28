@@ -10,13 +10,15 @@ const engine = await Novelty.Engine();
 engine.add(Novelty.Light);
 
 const floor = engine.add(Novelty.Box, { fixed: true, size: { x: 10, y: 0.5, z: 10 }, position: { x: 0, y: -2, z: 0 } });
-const player = engine.add(Novelty.Box, { fixed: true, color: 0xff0000 });
+const player = engine.add(Novelty.Capsule, { fixed: true, color: 0xff0000 });
 
-engine.onUpdate((input) => {
-  if (input.held(Novelty.Key.W)) player.move(0, 0, -5);
-  if (input.held(Novelty.Key.S)) player.move(0, 0, 5);
-  if (input.held(Novelty.Key.A)) player.move(-5, 0, 0);
-  if (input.held(Novelty.Key.D)) player.move(5, 0, 0);
+engine.setCamera(Novelty.FPSCamera, { target: player, height: 0.8 });
+
+engine.onUpdate((input, camera) => {
+  if (input.held(Novelty.Key.W)) player.move(...camera.forward(5));
+  if (input.held(Novelty.Key.S)) player.move(...camera.back(5));
+  if (input.held(Novelty.Key.A)) player.move(...camera.left(5));
+  if (input.held(Novelty.Key.D)) player.move(...camera.right(5));
 });
 
 engine.start();
@@ -42,15 +44,58 @@ const sphere = engine.add(Novelty.Sphere, { radius: 0.5 });
 const light = engine.add(Novelty.Light);
 ```
 
-### `engine.onUpdate(callback)`
+### `engine.setCamera(token, options?)`
 
-Registers a function that runs every frame. Receives an `Input` object for reading keyboard state.
+Switches the active camera mode. Defaults to orbit camera.
 
 ```typescript
-engine.onUpdate((input) => {
-  if (input.held(Novelty.Key.W)) player.move(0, 0, -5);
+// First-person camera attached to a physics object
+engine.setCamera(Novelty.FPSCamera, { target: player, height: 0.8 });
+
+// Switch back to orbit camera
+engine.setCamera(Novelty.OrbitCamera);
+```
+
+#### `Novelty.FPSCamera`
+
+| Option | Type | Default |
+|--------|------|---------|
+| `target` | `PhysicalGameObject` | *(required)* |
+| `height` | `number` | `0.8` |
+
+Click to lock mouse, ESC to unlock. Camera follows `target` each frame at the given `height` offset.
+
+#### `Novelty.OrbitCamera`
+
+No options. Restores the default orbit controls.
+
+### `engine.onUpdate(callback)`
+
+Registers a function that runs every frame. Receives an `Input` object and a `Camera` object.
+
+```typescript
+engine.onUpdate((input, camera) => {
+  // Camera-relative movement
+  if (input.held(Novelty.Key.W)) player.move(...camera.forward(5));
+  if (input.held(Novelty.Key.S)) player.move(...camera.back(5));
+  if (input.held(Novelty.Key.A)) player.move(...camera.left(5));
+  if (input.held(Novelty.Key.D)) player.move(...camera.right(5));
+
+  // World-space movement still works
+  player.move(0, 5, 0);
 });
 ```
+
+The `camera` object provides direction helpers based on the current camera facing (horizontal plane only, Y is always 0):
+
+| Method | Returns |
+|--------|---------|
+| `camera.forward(speed)` | `[x, y, z]` toward camera facing |
+| `camera.back(speed)` | `[x, y, z]` away from camera facing |
+| `camera.left(speed)` | `[x, y, z]` to the left |
+| `camera.right(speed)` | `[x, y, z]` to the right |
+
+Spread into `move()` for camera-relative movement. `move()` itself is always world-space.
 
 ### `engine.start()`
 
