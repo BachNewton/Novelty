@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module.js";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import RAPIER from "@dimforge/rapier3d";
 import { GameObject, GameObjectToken, InternalPhysicalGameObject } from "./GameObject.js";
 import { BoxToken, createBox } from "./Box.js";
@@ -13,6 +14,7 @@ class EngineInstance {
   private world: RAPIER.World;
   private physicsObjects: InternalPhysicalGameObject[] = [];
   private stats: Stats;
+  private controls: OrbitControls;
 
   constructor(world: RAPIER.World) {
     this.world = world;
@@ -32,6 +34,8 @@ class EngineInstance {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     document.body.appendChild(this.renderer.domElement);
+
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
     this.stats = new Stats();
     document.body.appendChild(this.stats.dom);
@@ -75,6 +79,7 @@ class EngineInstance {
       visual.quaternion.set(rot.x, rot.y, rot.z, rot.w);
     }
 
+    this.controls.update();
     this.renderer.render(this.scene, this.camera);
     this.stats.end();
   };

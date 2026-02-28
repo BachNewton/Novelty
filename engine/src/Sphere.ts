@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import RAPIER from "@dimforge/rapier3d";
-import { PhysicalGameObject, InternalPhysicalGameObject, GameObjectToken, GameObjectOptions } from "./GameObject.js";
+import { PhysicalGameObject, InternalPhysicalGameObject, GameObjectToken, PhysicalGameObjectOptions } from "./GameObject.js";
 
-export interface SphereOptions extends GameObjectOptions {
+export interface SphereOptions extends PhysicalGameObjectOptions {
   radius?: number;
 }
 
@@ -19,7 +19,7 @@ export function createSphere(scene: THREE.Scene, world: RAPIER.World, options?: 
 
   const mesh = new THREE.Mesh(
     new THREE.SphereGeometry(radius),
-    new THREE.MeshStandardMaterial({ color: 0xffffff }),
+    new THREE.MeshStandardMaterial({ color: options?.color ?? 0xffffff }),
   );
   scene.add(mesh);
 

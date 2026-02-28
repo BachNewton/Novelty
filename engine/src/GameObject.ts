@@ -17,6 +17,10 @@ export interface InternalGameObject extends GameObject {
   visual: THREE.Object3D;
 }
 
+export interface PhysicalGameObjectOptions extends GameObjectOptions {
+  color?: string | number;
+}
+
 export interface PhysicalGameObject extends GameObject {
 }
 

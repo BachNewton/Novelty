@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import RAPIER from "@dimforge/rapier3d";
-import { PhysicalGameObject, InternalPhysicalGameObject, GameObjectToken, GameObjectOptions } from "./GameObject.js";
+import { PhysicalGameObject, InternalPhysicalGameObject, GameObjectToken, PhysicalGameObjectOptions } from "./GameObject.js";
 
-export interface BoxOptions extends GameObjectOptions {
+export interface BoxOptions extends PhysicalGameObjectOptions {
   size?: { x: number; y: number; z: number };
 }
 
@@ -21,7 +21,7 @@ export function createBox(scene: THREE.Scene, world: RAPIER.World, options?: Box
 
   const mesh = new THREE.Mesh(
     new THREE.BoxGeometry(sx, sy, sz),
-    new THREE.MeshStandardMaterial({ color: 0xffffff }),
+    new THREE.MeshStandardMaterial({ color: options?.color ?? 0xffffff }),
   );
   scene.add(mesh);
 
