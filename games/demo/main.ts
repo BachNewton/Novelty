@@ -12,7 +12,7 @@ engine.add(Novelty.Box, {
     color: 0xffffff
 });
 
-engine.add(Novelty.Box, {
+const player = engine.add(Novelty.Box, {
     position: { x: 0, y: 0, z: 0 },
     size: { x: 1, y: 1, z: 1 },
     color: 0xff0000
@@ -36,6 +36,13 @@ engine.add(Novelty.Capsule, {
     radius: 0.5,
     length: 1,
     color: 0xffff00
+});
+
+engine.onUpdate((input) => {
+    if (input.held(Novelty.Key.W)) player.move(0, 0, -5);
+    if (input.held(Novelty.Key.S)) player.move(0, 0, 5);
+    if (input.held(Novelty.Key.A)) player.move(-5, 0, 0);
+    if (input.held(Novelty.Key.D)) player.move(5, 0, 0);
 });
 
 engine.start();

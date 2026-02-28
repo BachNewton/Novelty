@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import RAPIER from "@dimforge/rapier3d";
-import { GameObjectToken } from "../GameObject.js";
-import { PhysicalGameObject, InternalPhysicalGameObject, PhysicalGameObjectOptions, createBody } from "./PhysicalGameObject.js";
+import { GameObjectToken, Clock } from "../GameObject.js";
+import { PhysicalGameObject, InternalPhysicalGameObject, PhysicalGameObjectOptions, createBody, createMove } from "./PhysicalGameObject.js";
 
 export interface SphereOptions extends PhysicalGameObjectOptions {
   radius?: number;
@@ -15,7 +15,7 @@ export interface InternalSphere extends InternalPhysicalGameObject, Sphere {
 
 export const SphereToken: GameObjectToken<SphereOptions, Sphere> = { kind: "sphere" };
 
-export function createSphere(scene: THREE.Scene, world: RAPIER.World, options?: SphereOptions): InternalSphere {
+export function createSphere(scene: THREE.Scene, world: RAPIER.World, clock: Clock, options?: SphereOptions): InternalSphere {
   const radius = options?.radius ?? 0.5;
 
   const mesh = new THREE.Mesh(
@@ -30,6 +30,6 @@ export function createSphere(scene: THREE.Scene, world: RAPIER.World, options?: 
   return {
     visual: mesh,
     body,
-    move: (x, y, z) => body.setTranslation({ x, y, z }, true),
+    move: createMove(body, clock),
   };
 }

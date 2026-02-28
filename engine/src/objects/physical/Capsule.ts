@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import RAPIER from "@dimforge/rapier3d";
-import { GameObjectToken } from "../GameObject.js";
-import { PhysicalGameObject, InternalPhysicalGameObject, PhysicalGameObjectOptions, createBody } from "./PhysicalGameObject.js";
+import { GameObjectToken, Clock } from "../GameObject.js";
+import { PhysicalGameObject, InternalPhysicalGameObject, PhysicalGameObjectOptions, createBody, createMove } from "./PhysicalGameObject.js";
 
 export interface CapsuleOptions extends PhysicalGameObjectOptions {
   radius?: number;
@@ -16,7 +16,7 @@ export interface InternalCapsule extends InternalPhysicalGameObject, Capsule {
 
 export const CapsuleToken: GameObjectToken<CapsuleOptions, Capsule> = { kind: "capsule" };
 
-export function createCapsule(scene: THREE.Scene, world: RAPIER.World, options?: CapsuleOptions): InternalCapsule {
+export function createCapsule(scene: THREE.Scene, world: RAPIER.World, clock: Clock, options?: CapsuleOptions): InternalCapsule {
   const radius = options?.radius ?? 0.5;
   const length = options?.length ?? 1;
 
@@ -32,6 +32,6 @@ export function createCapsule(scene: THREE.Scene, world: RAPIER.World, options?:
   return {
     visual: mesh,
     body,
-    move: (x, y, z) => body.setTranslation({ x, y, z }, true),
+    move: createMove(body, clock),
   };
 }

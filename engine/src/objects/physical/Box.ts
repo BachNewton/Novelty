@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import RAPIER from "@dimforge/rapier3d";
-import { GameObjectToken } from "../GameObject.js";
-import { PhysicalGameObject, InternalPhysicalGameObject, PhysicalGameObjectOptions, createBody } from "./PhysicalGameObject.js";
+import { GameObjectToken, Clock } from "../GameObject.js";
+import { PhysicalGameObject, InternalPhysicalGameObject, PhysicalGameObjectOptions, createBody, createMove } from "./PhysicalGameObject.js";
 
 export interface BoxOptions extends PhysicalGameObjectOptions {
   size?: { x: number; y: number; z: number };
@@ -15,7 +15,7 @@ export interface InternalBox extends InternalPhysicalGameObject, Box {
 
 export const BoxToken: GameObjectToken<BoxOptions, Box> = { kind: "box" };
 
-export function createBox(scene: THREE.Scene, world: RAPIER.World, options?: BoxOptions): InternalBox {
+export function createBox(scene: THREE.Scene, world: RAPIER.World, clock: Clock, options?: BoxOptions): InternalBox {
   const sx = options?.size?.x ?? 1;
   const sy = options?.size?.y ?? 1;
   const sz = options?.size?.z ?? 1;
@@ -32,6 +32,6 @@ export function createBox(scene: THREE.Scene, world: RAPIER.World, options?: Box
   return {
     visual: mesh,
     body,
-    move: (x, y, z) => body.setTranslation({ x, y, z }, true),
+    move: createMove(body, clock),
   };
 }

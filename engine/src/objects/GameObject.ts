@@ -1,5 +1,9 @@
 import * as THREE from "three";
 
+export interface Clock {
+  dt: number;
+}
+
 export interface GameObjectToken<TOptions, TResult> {
   readonly kind: string;
 }

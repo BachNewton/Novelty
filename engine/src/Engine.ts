@@ -2,12 +2,13 @@ import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import RAPIER from "@dimforge/rapier3d";
-import { GameObject, GameObjectToken } from "./objects/GameObject.js";
+import { GameObject, GameObjectToken, Clock } from "./objects/GameObject.js";
 import { InternalPhysicalGameObject } from "./objects/physical/PhysicalGameObject.js";
 import { BoxToken, createBox } from "./objects/physical/Box.js";
 import { LightToken, createLight } from "./objects/Light.js";
 import { SphereToken, createSphere } from "./objects/physical/Sphere.js";
 import { CapsuleToken, createCapsule } from "./objects/physical/Capsule.js";
+import { Input, createInput } from "./Input.js";
 
 class EngineInstance {
   private scene: THREE.Scene;
@@ -17,6 +18,10 @@ class EngineInstance {
   private physicsObjects: InternalPhysicalGameObject[] = [];
   private stats: Stats;
   private controls: OrbitControls;
+  private clock: Clock = { dt: 0 };
+  private lastTime = 0;
+  private updateCallback?: (input: Input) => void;
+  private input: Input;
 
   constructor(world: RAPIER.World) {
     this.world = world;
@@ -42,23 +47,29 @@ class EngineInstance {
     this.stats = new Stats();
     document.body.appendChild(this.stats.dom);
 
+    this.input = createInput();
+
     window.addEventListener("resize", this.onResize);
+  }
+
+  onUpdate(callback: (input: Input) => void): void {
+    this.updateCallback = callback;
   }
 
   add<O, R extends GameObject>(token: GameObjectToken<O, R>, options?: O): R {
     switch (token.kind) {
       case BoxToken.kind: {
-        const box = createBox(this.scene, this.world, options as any);
+        const box = createBox(this.scene, this.world, this.clock, options as any);
         this.physicsObjects.push(box);
         return box as unknown as R;
       }
       case SphereToken.kind: {
-        const sphere = createSphere(this.scene, this.world, options as any);
+        const sphere = createSphere(this.scene, this.world, this.clock, options as any);
         this.physicsObjects.push(sphere);
         return sphere as unknown as R;
       }
       case CapsuleToken.kind: {
-        const capsule = createCapsule(this.scene, this.world, options as any);
+        const capsule = createCapsule(this.scene, this.world, this.clock, options as any);
         this.physicsObjects.push(capsule);
         return capsule as unknown as R;
       }
@@ -75,8 +86,13 @@ class EngineInstance {
     console.log("Novelty Engine started");
   }
 
-  private animate = (): void => {
+  private animate = (time: number): void => {
     this.stats.begin();
+    this.clock.dt = this.lastTime === 0 ? 0 : (time - this.lastTime) / 1000;
+    this.lastTime = time;
+
+    this.updateCallback?.(this.input);
+
     this.world.step();
 
     for (const { visual, body } of this.physicsObjects) {

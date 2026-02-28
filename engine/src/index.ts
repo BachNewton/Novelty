@@ -9,6 +9,8 @@ import { LightToken } from "./objects/Light.js";
 import { BoxToken } from "./objects/physical/Box.js";
 import { SphereToken } from "./objects/physical/Sphere.js";
 import { CapsuleToken } from "./objects/physical/Capsule.js";
+import { Key as KeyConst } from "./Input.js";
+import type { KeyCode as KeyCodeType, Input as InputType } from "./Input.js";
 
 export namespace Novelty {
   export const Engine = createEngine;
@@ -28,4 +30,7 @@ export namespace Novelty {
   export const Capsule = CapsuleToken;
   export type CapsuleOptions = CapsuleOptionsType;
   export type LightOptions = LightOptionsType;
+  export const Key = KeyConst;
+  export type KeyCode = KeyCodeType;
+  export type Input = InputType;
 }
