@@ -2,10 +2,12 @@ import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import RAPIER from "@dimforge/rapier3d";
-import { GameObject, GameObjectToken, InternalPhysicalGameObject } from "./GameObject.js";
-import { BoxToken, createBox } from "./Box.js";
-import { LightToken, createLight } from "./Light.js";
-import { SphereToken, createSphere } from "./Sphere.js";
+import { GameObject, GameObjectToken } from "./objects/GameObject.js";
+import { InternalPhysicalGameObject } from "./objects/physical/PhysicalGameObject.js";
+import { BoxToken, createBox } from "./objects/physical/Box.js";
+import { LightToken, createLight } from "./objects/Light.js";
+import { SphereToken, createSphere } from "./objects/physical/Sphere.js";
+import { CapsuleToken, createCapsule } from "./objects/physical/Capsule.js";
 
 class EngineInstance {
   private scene: THREE.Scene;
@@ -28,7 +30,7 @@ class EngineInstance {
       0.1,
       1000,
     );
-    this.camera.position.set(0, 3, 10);
+    this.camera.position.set(5, 4, 10);
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -54,6 +56,11 @@ class EngineInstance {
         const sphere = createSphere(this.scene, this.world, options as any);
         this.physicsObjects.push(sphere);
         return sphere as unknown as R;
+      }
+      case CapsuleToken.kind: {
+        const capsule = createCapsule(this.scene, this.world, options as any);
+        this.physicsObjects.push(capsule);
+        return capsule as unknown as R;
       }
       case LightToken.kind: {
         return createLight(this.scene, options as any) as unknown as R;

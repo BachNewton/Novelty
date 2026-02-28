@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import RAPIER from "@dimforge/rapier3d";
-import { PhysicalGameObject, InternalPhysicalGameObject, GameObjectToken, PhysicalGameObjectOptions, createBody } from "./GameObject.js";
+import { GameObjectToken } from "../GameObject.js";
+import { PhysicalGameObject, InternalPhysicalGameObject, PhysicalGameObjectOptions, createBody } from "./PhysicalGameObject.js";
 
 export interface BoxOptions extends PhysicalGameObjectOptions {
   size?: { x: number; y: number; z: number };

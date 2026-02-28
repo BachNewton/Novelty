@@ -1,11 +1,14 @@
 import { Engine as createEngine } from "./Engine.js";
-import type { GameObject as GameObjectType, PhysicalGameObject as PhysicalGameObjectType, GameObjectOptions as GameObjectOptionsType, PhysicalGameObjectOptions as PhysicalGameObjectOptionsType } from "./GameObject.js";
-import type { Light as LightType, LightOptions as LightOptionsType } from "./Light.js";
-import type { Box as BoxType, BoxOptions as BoxOptionsType } from "./Box.js";
-import type { Sphere as SphereType, SphereOptions as SphereOptionsType } from "./Sphere.js";
-import { LightToken } from "./Light.js";
-import { BoxToken } from "./Box.js";
-import { SphereToken } from "./Sphere.js";
+import type { GameObject as GameObjectType, GameObjectOptions as GameObjectOptionsType } from "./objects/GameObject.js";
+import type { PhysicalGameObject as PhysicalGameObjectType, PhysicalGameObjectOptions as PhysicalGameObjectOptionsType } from "./objects/physical/PhysicalGameObject.js";
+import type { Light as LightType, LightOptions as LightOptionsType } from "./objects/Light.js";
+import type { Box as BoxType, BoxOptions as BoxOptionsType } from "./objects/physical/Box.js";
+import type { Sphere as SphereType, SphereOptions as SphereOptionsType } from "./objects/physical/Sphere.js";
+import type { Capsule as CapsuleType, CapsuleOptions as CapsuleOptionsType } from "./objects/physical/Capsule.js";
+import { LightToken } from "./objects/Light.js";
+import { BoxToken } from "./objects/physical/Box.js";
+import { SphereToken } from "./objects/physical/Sphere.js";
+import { CapsuleToken } from "./objects/physical/Capsule.js";
 
 export namespace Novelty {
   export const Engine = createEngine;
@@ -21,5 +24,8 @@ export namespace Novelty {
   export type Sphere = SphereType;
   export const Sphere = SphereToken;
   export type SphereOptions = SphereOptionsType;
+  export type Capsule = CapsuleType;
+  export const Capsule = CapsuleToken;
+  export type CapsuleOptions = CapsuleOptionsType;
   export type LightOptions = LightOptionsType;
 }

@@ -24,4 +24,18 @@ engine.add(Novelty.Sphere, {
     color: 0x0000ff
 });
 
+engine.add(Novelty.Capsule, {
+    position: { x: 2, y: 2, z: 0 },
+    radius: 0.5,
+    length: 1,
+    color: 0x00ff00
+});
+
+engine.add(Novelty.Capsule, {
+    position: { x: -2, y: 2, z: 0 },
+    radius: 0.5,
+    length: 1,
+    color: 0xffff00
+});
+
 engine.start();
