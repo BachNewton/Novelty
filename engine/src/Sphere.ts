@@ -2,25 +2,23 @@ import * as THREE from "three";
 import RAPIER from "@dimforge/rapier3d";
 import { PhysicalGameObject, InternalPhysicalGameObject, GameObjectToken, GameObjectOptions } from "./GameObject.js";
 
-export interface BoxOptions extends GameObjectOptions {
-  size?: { x: number; y: number; z: number };
+export interface SphereOptions extends GameObjectOptions {
+  radius?: number;
 }
 
-export interface Box extends PhysicalGameObject {
+export interface Sphere extends PhysicalGameObject {
 }
 
-export interface InternalBox extends InternalPhysicalGameObject, Box {
+export interface InternalSphere extends InternalPhysicalGameObject, Sphere {
 }
 
-export const BoxToken: GameObjectToken<BoxOptions, Box> = { kind: "box" };
+export const SphereToken: GameObjectToken<SphereOptions, Sphere> = { kind: "sphere" };
 
-export function createBox(scene: THREE.Scene, world: RAPIER.World, options?: BoxOptions): InternalBox {
-  const sx = options?.size?.x ?? 1;
-  const sy = options?.size?.y ?? 1;
-  const sz = options?.size?.z ?? 1;
+export function createSphere(scene: THREE.Scene, world: RAPIER.World, options?: SphereOptions): InternalSphere {
+  const radius = options?.radius ?? 0.5;
 
   const mesh = new THREE.Mesh(
-    new THREE.BoxGeometry(sx, sy, sz),
+    new THREE.SphereGeometry(radius),
     new THREE.MeshStandardMaterial({ color: 0xffffff }),
   );
   scene.add(mesh);
@@ -28,7 +26,7 @@ export function createBox(scene: THREE.Scene, world: RAPIER.World, options?: Box
   const bodyDesc = RAPIER.RigidBodyDesc.fixed();
   const body = world.createRigidBody(bodyDesc);
 
-  const colliderDesc = RAPIER.ColliderDesc.cuboid(sx / 2, sy / 2, sz / 2);
+  const colliderDesc = RAPIER.ColliderDesc.ball(radius);
   world.createCollider(colliderDesc, body);
 
   if (options?.position) {

@@ -1,9 +1,10 @@
 import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module.js";
 import RAPIER from "@dimforge/rapier3d";
-import { Light, createLight } from "./Light.js";
-import { InternalPhysicalGameObject } from "./GameObject.js";
-import { Box, createBox } from "./Box.js";
+import { GameObject, GameObjectToken, InternalPhysicalGameObject } from "./GameObject.js";
+import { BoxToken, createBox } from "./Box.js";
+import { LightToken, createLight } from "./Light.js";
+import { SphereToken, createSphere } from "./Sphere.js";
 
 class EngineInstance {
   private scene: THREE.Scene;
@@ -38,14 +39,24 @@ class EngineInstance {
     window.addEventListener("resize", this.onResize);
   }
 
-  addLight(): Light {
-    return createLight(this.scene);
-  }
-
-  addBox(): Box {
-    const box = createBox(this.scene, this.world);
-    this.physicsObjects.push(box);
-    return box;
+  add<O, R extends GameObject>(token: GameObjectToken<O, R>, options?: O): R {
+    switch (token.kind) {
+      case BoxToken.kind: {
+        const box = createBox(this.scene, this.world, options as any);
+        this.physicsObjects.push(box);
+        return box as unknown as R;
+      }
+      case SphereToken.kind: {
+        const sphere = createSphere(this.scene, this.world, options as any);
+        this.physicsObjects.push(sphere);
+        return sphere as unknown as R;
+      }
+      case LightToken.kind: {
+        return createLight(this.scene, options as any) as unknown as R;
+      }
+      default:
+        throw new Error(`Unknown game object kind: ${token.kind}`);
+    }
   }
 
   start(): void {
