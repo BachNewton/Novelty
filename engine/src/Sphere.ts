@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import RAPIER from "@dimforge/rapier3d";
-import { PhysicalGameObject, InternalPhysicalGameObject, GameObjectToken, PhysicalGameObjectOptions } from "./GameObject.js";
+import { PhysicalGameObject, InternalPhysicalGameObject, GameObjectToken, PhysicalGameObjectOptions, createBody } from "./GameObject.js";
 
 export interface SphereOptions extends PhysicalGameObjectOptions {
   radius?: number;
@@ -23,15 +23,8 @@ export function createSphere(scene: THREE.Scene, world: RAPIER.World, options?: 
   );
   scene.add(mesh);
 
-  const bodyDesc = RAPIER.RigidBodyDesc.fixed();
-  const body = world.createRigidBody(bodyDesc);
-
-  const colliderDesc = RAPIER.ColliderDesc.ball(radius);
-  world.createCollider(colliderDesc, body);
-
-  if (options?.position) {
-    body.setTranslation(options.position, true);
-  }
+  const body = createBody(world, options);
+  world.createCollider(RAPIER.ColliderDesc.ball(radius), body);
 
   return {
     visual: mesh,

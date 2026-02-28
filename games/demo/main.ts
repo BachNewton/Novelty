@@ -6,6 +6,7 @@ engine.add(Novelty.Light);
 
 // Floor
 engine.add(Novelty.Box, {
+    fixed: true,
     position: { x: 0, y: -2, z: 0 },
     size: { x: 25, y: 0.5, z: 25 },
     color: 0xffffff

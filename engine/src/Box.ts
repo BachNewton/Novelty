@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import RAPIER from "@dimforge/rapier3d";
-import { PhysicalGameObject, InternalPhysicalGameObject, GameObjectToken, PhysicalGameObjectOptions } from "./GameObject.js";
+import { PhysicalGameObject, InternalPhysicalGameObject, GameObjectToken, PhysicalGameObjectOptions, createBody } from "./GameObject.js";
 
 export interface BoxOptions extends PhysicalGameObjectOptions {
   size?: { x: number; y: number; z: number };
@@ -25,15 +25,8 @@ export function createBox(scene: THREE.Scene, world: RAPIER.World, options?: Box
   );
   scene.add(mesh);
 
-  const bodyDesc = RAPIER.RigidBodyDesc.fixed();
-  const body = world.createRigidBody(bodyDesc);
-
-  const colliderDesc = RAPIER.ColliderDesc.cuboid(sx / 2, sy / 2, sz / 2);
-  world.createCollider(colliderDesc, body);
-
-  if (options?.position) {
-    body.setTranslation(options.position, true);
-  }
+  const body = createBody(world, options);
+  world.createCollider(RAPIER.ColliderDesc.cuboid(sx / 2, sy / 2, sz / 2), body);
 
   return {
     visual: mesh,
